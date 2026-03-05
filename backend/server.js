@@ -20,7 +20,6 @@ checkEnvironment();
 
 app.post("/api/gift-suggestion", async (req, res) => {
   const { prompt } = req.body;
-  // const prompt = "Suggest some gifts for someone who loves hiphop music";
 
   if (!prompt) {
     return res.status(400).json({ error: "Prompt is required" });
