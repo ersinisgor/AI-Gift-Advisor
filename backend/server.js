@@ -35,15 +35,13 @@ app.post("/api/gift-suggestion", async (req, res) => {
         {
           role: "system",
           content:
-            "You are a helpful assistant that suggests thoughtful gift ideas based on user interests.",
+            "You are a helpful assistant that suggests thoughtful gift ideas based on user interests. Make these suggestions thoughtful and practical. Your response must be under 500 words. Skip intros and conclusions.Only output gift suggestions.",
         },
         {
           role: "user",
           content: prompt,
         },
       ],
-      // max_completion_tokens: 150,
-      temperature: 0.7,
     });
 
     console.log("AI response:");
