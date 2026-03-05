@@ -10,27 +10,37 @@ export default function GiftForm() {
     if (!input.trim()) return;
 
     setLoading(true);
+    setOutput("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/gift-suggestion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: input,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/gift-suggestion`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: input,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Server error");
+      }
 
       const data = await res.json();
-
       setOutput(data.suggestion);
     } catch (err) {
       console.error(err);
-      setOutput("Something went wrong.");
+      console.error("Gift suggestion error:", err);
+      setOutput(
+        "Sorry, I can't access what I need right now. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return (
@@ -49,6 +59,7 @@ export default function GiftForm() {
         <div className="lamp-container">
           <button
             type="submit"
+            disabled={loading}
             className={`lamp-btn ${loading ? "loading" : ""}`}
           >
             <span className="lamp-icon">
