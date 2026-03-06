@@ -2,13 +2,18 @@ import express from "express";
 import OpenAI from "openai";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
 import { checkEnvironment } from "./utils.js";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://ai-gift-advisor.onrender.com",
+  })
+);
 app.use(express.json());
 
 const openai = new OpenAI({
@@ -89,6 +94,16 @@ app.post("/api/gift-suggestion", async (req, res) => {
   }
 });
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
+const __dirname = new URL(".", import.meta.url).pathname;
+
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });
