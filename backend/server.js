@@ -20,7 +20,6 @@ checkEnvironment();
 
 app.post("/api/gift-suggestion", async (req, res) => {
   const { prompt } = req.body;
-  // const prompt = "Suggest some gifts for someone who loves hiphop music";
 
   if (!prompt) {
     return res.status(400).json({ error: "Prompt is required" });
@@ -29,26 +28,48 @@ app.post("/api/gift-suggestion", async (req, res) => {
   console.log("Gift suggestion request:", prompt);
 
   try {
-    const response = await openai.chat.completions.create({
+    const stream = await openai.chat.completions.create({
       model: process.env.AI_MODEL,
       messages: [
         {
           role: "system",
-          content:
-            "You are a helpful assistant that suggests thoughtful gift ideas based on user interests. Make these suggestions thoughtful and practical. Your response must be under 500 words. Skip intros and conclusions.Only output gift suggestions.",
+          content: `You are a helpful assistant that suggests thoughtful gift ideas based on user interests. Make these suggestions thoughtful and practical. Your response must be under 500 words. Skip intros and conclusions. Only output gift suggestions. Format the response in Markdown. Use response format below.
+                        
+          Format:
+          1. Gift name (bold font weight)
+          Short explanation (1-2 sentence in new line)
+          Price Range: Estimated price range (in new line)
+          
+          Examples: 
+          1. **Premium Spinning Rod and Reel Combo**
+          A well-balanced freshwater rod and smooth-reeling reel that improves sensitivity and reduces fatigue on long days on the water.
+          Price Range: $120-$300
+          
+          2. **Durable Fishing Vest with Pockets**
+          Lightweight, breathable vest with multiple pockets to keep tackle, pliers, and snacks within easy reach.
+          Price Range: $40-$120`,
         },
         {
           role: "user",
           content: prompt,
         },
       ],
+      stream: true,
     });
 
-    console.log("AI response:");
-    console.log(response.choices[0].message.content);
-    const message = response.choices[0].message.content;
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+    res.flushHeaders();
 
-    res.json({ suggestion: message });
+    for await (const chunk of stream) {
+      const content = chunk.choices?.[0]?.delta?.content;
+
+      if (content) {
+        res.write(content);
+      }
+    }
+
+    res.end();
   } catch (error) {
     const status = error?.status || error?.response?.status;
 
