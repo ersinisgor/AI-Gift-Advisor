@@ -1,0 +1,23 @@
+{
+  "name": "ai-gift-advisor",
+  "version": "1.0.0",
+  "description": "AI Gift Advisor is a full-stack web application that provides personalized gift suggestions using AI",
+  "homepage": "https://github.com/ersinisgor/AI-Gift-Advisor#readme",
+  "bugs": {
+    "url": "https://github.com/ersinisgor/AI-Gift-Advisor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ersinisgor/AI-Gift-Advisor.git"
+  },
+  "license": "ISC",
+  "author": "Ersin Isgor",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-all": "npm install --prefix backend && npm install --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "start": "node backend/server.js"
+  }
+}
