@@ -9,6 +9,22 @@ AI Gift Advisor is a full-stack web application that provides personalized gift 
 - Full-stack setup: **Vite + React** frontend and **Node.js + Express** backend
 - Secure environment variables for API keys and model configuration
 
+## Tech Stack
+
+**Backend:**
+
+- Node.js
+- Express
+- OpenAI API
+- Streaming responses
+
+**Frontend:**
+
+- React
+- Vite
+- Marked (Markdown Rendering)
+- DOMPurify
+
 ## Setup
 
 1. Clone the repository
