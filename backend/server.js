@@ -33,8 +33,12 @@ app.post("/api/gift-suggestion", async (req, res) => {
       messages: [
         {
           role: "system",
-          content:
-            "You are a helpful assistant that suggests thoughtful gift ideas based on user interests. Make these suggestions thoughtful and practical. Your response must be under 500 words. Skip intros and conclusions.Only output gift suggestions.",
+          content: `You are a helpful assistant that suggests thoughtful gift ideas based on user interests. Make these suggestions thoughtful and practical. Your response must be under 500 words. Skip intros and conclusions. Only output gift suggestions. Format the response in Markdown. Use bullet lists for gift ideas.
+                        
+          Format:
+          1. Gift name
+          2. Short explanation (1-2 sentence)
+          3. Estimated price range`,
         },
         {
           role: "user",
