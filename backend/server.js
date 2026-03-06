@@ -33,12 +33,21 @@ app.post("/api/gift-suggestion", async (req, res) => {
       messages: [
         {
           role: "system",
-          content: `You are a helpful assistant that suggests thoughtful gift ideas based on user interests. Make these suggestions thoughtful and practical. Your response must be under 500 words. Skip intros and conclusions. Only output gift suggestions. Format the response in Markdown. Use bullet lists for gift ideas.
+          content: `You are a helpful assistant that suggests thoughtful gift ideas based on user interests. Make these suggestions thoughtful and practical. Your response must be under 500 words. Skip intros and conclusions. Only output gift suggestions. Format the response in Markdown. Use response format below.
                         
           Format:
-          1. Gift name
-          2. Short explanation (1-2 sentence)
-          3. Estimated price range`,
+          1. Gift name (bold font weight)
+          Short explanation (1-2 sentence in new line)
+          Price Range: Estimated price range (in new line)
+          
+          Examples: 
+          1. **Premium Spinning Rod and Reel Combo**
+          A well-balanced freshwater rod and smooth-reeling reel that improves sensitivity and reduces fatigue on long days on the water.
+          Price Range: $120-$300
+          
+          2. **Durable Fishing Vest with Pockets**
+          Lightweight, breathable vest with multiple pockets to keep tackle, pliers, and snacks within easy reach.
+          Price Range: $40-$120`,
         },
         {
           role: "user",
