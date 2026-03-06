@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 export default function GiftForm() {
   const [input, setInput] = useState("");
@@ -31,7 +33,8 @@ export default function GiftForm() {
       }
 
       const data = await res.json();
-      setOutput(data.suggestion);
+      const html = marked.parse(data.suggestion);
+      setOutput(DOMPurify.sanitize(html));
     } catch (err) {
       console.error(err);
       console.error("Gift suggestion error:", err);
@@ -76,7 +79,10 @@ export default function GiftForm() {
       {output && (
         <section className="output-section">
           <div id="output-container" className="visible">
-            <div id="output-content">{output}</div>
+            <div
+              id="output-content"
+              dangerouslySetInnerHTML={{ __html: output }}
+            ></div>
           </div>
         </section>
       )}
