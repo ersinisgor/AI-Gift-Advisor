@@ -6,13 +6,18 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { checkEnvironment } from "./utils.js";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+checkEnvironment();
 
 const app = express();
 
 app.use(
   cors({
-    origin: "https://ai-gift-advisor.onrender.com",
+    origin: "https://ai-gift-advisor-vi1i.onrender.com",
   })
 );
 app.use(express.json());
@@ -21,8 +26,6 @@ const openai = new OpenAI({
   apiKey: process.env.AI_KEY,
   baseURL: process.env.AI_URL,
 });
-
-checkEnvironment();
 
 app.post("/api/gift-suggestion", async (req, res) => {
   const { prompt } = req.body;
@@ -94,9 +97,6 @@ app.post("/api/gift-suggestion", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch AI suggestion" });
   }
 });
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
