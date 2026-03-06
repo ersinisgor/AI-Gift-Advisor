@@ -32,12 +32,31 @@ export default function GiftForm() {
         throw new Error("Server error");
       }
 
-      const data = await res.json();
-      const html = marked.parse(data.suggestion);
-      setOutput(DOMPurify.sanitize(html));
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+
+      let accumulatedText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          const finalHTML = marked.parse(accumulatedText);
+          setOutput(DOMPurify.sanitize(finalHTML));
+          break;
+        }
+
+        const chunk = decoder.decode(value);
+        accumulatedText += chunk;
+
+        const html = marked.parse(accumulatedText);
+
+        // render WITH cursor while streaming
+        setOutput(DOMPurify.sanitize(html) + "▌");
+      }
     } catch (err) {
-      console.error(err);
       console.error("Gift suggestion error:", err);
+
       setOutput(
         "Sorry, I can't access what I need right now. Please try again."
       );
