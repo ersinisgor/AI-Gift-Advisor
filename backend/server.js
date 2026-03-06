@@ -28,7 +28,7 @@ app.post("/api/gift-suggestion", async (req, res) => {
   console.log("Gift suggestion request:", prompt);
 
   try {
-    const response = await openai.chat.completions.create({
+    const stream = await openai.chat.completions.create({
       model: process.env.AI_MODEL,
       messages: [
         {
@@ -54,13 +54,22 @@ app.post("/api/gift-suggestion", async (req, res) => {
           content: prompt,
         },
       ],
+      stream: true,
     });
 
-    console.log("AI response:");
-    console.log(response.choices[0].message.content);
-    const message = response.choices[0].message.content;
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+    res.flushHeaders();
 
-    res.json({ suggestion: message });
+    for await (const chunk of stream) {
+      const content = chunk.choices?.[0]?.delta?.content;
+
+      if (content) {
+        res.write(content);
+      }
+    }
+
+    res.end();
   } catch (error) {
     const status = error?.status || error?.response?.status;
 
